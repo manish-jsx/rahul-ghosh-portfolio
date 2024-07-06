@@ -17,14 +17,14 @@ interface Project { // Defining the structure of the project object
 }
 
 // Initializing projectsData with an empty array of type Project
-const projectsData: Project[] = []; // Sample project data (replace with your actual project data fetched from API or CMS)
+export const projectsData: Project[] = []; // Sample project data (replace with your actual project data fetched from API or CMS)
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.15 } }, // Smooth stagger
 };
 
-const itemVariants = {
+export const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } },
 };

@@ -2,7 +2,7 @@
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Contact from '../components/Contact';
-import ProjectCard from '../components/ProjectCard';
+import ProjectCard  from '../components/ProjectCard';
 
 
 
@@ -12,7 +12,7 @@ export default function ProjectsPage() {
     <main>
       <Header />
       {/* Main content */}
-      <ProjectCard />
+      <ProjectCard project={undefined} variants={undefined} />
      <Contact />
       <Footer />
     </main>
