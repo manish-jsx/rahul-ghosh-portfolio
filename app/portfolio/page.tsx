@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import ProjectCard from "./ProjectCard";
+import ProjectCard from "../components/ProjectCard";
 import { AnimatePresence, motion } from "framer-motion";
 import { BeatLoader } from "react-spinners";
 import Image from "next/image";
