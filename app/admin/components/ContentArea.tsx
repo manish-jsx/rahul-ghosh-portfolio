@@ -122,9 +122,8 @@ const ContentArea = ({ selectedRoute }: { selectedRoute: string }) => {
 
 
 
-
-  const handleEditClick = (item: any = apiData) => {
-    setFormMode("edit");
+  const handleEditClick = (item: any = apiData) => { // Pass the item to edit or the whole apiData if not an array
+    setEditMode(true);
     setEditedData(item);
   };
 
@@ -172,15 +171,64 @@ const ContentArea = ({ selectedRoute }: { selectedRoute: string }) => {
   };
 
   
+  // const handleSaveClick = async () => {
+  //   try {
+  //     const method = editMode || formMode === "add" ? "POST" : "PUT"; 
+  //     const body = editMode || formMode === "add" ? editedData : // New or edited data
+  //       Array.isArray(apiData)
+  //         ? apiData.map((item: any) =>
+  //             item.id === editedData.id ? editedData : item
+  //           )
+  //         : editedData; // Replace text data
+
+  //     const response = await fetch(selectedRoute, {
+  //       method,
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(body),
+  //     });
+  //     if (response.ok) {
+  //       const updatedData = await response.json();
+  //       if (editMode || formMode === "add") {
+  //         setApiData(Array.isArray(apiData) ? [...apiData, updatedData] : updatedData);
+  //       } else {
+  //         setApiData(updatedData);
+  //       }
+  //       setEditMode(false);
+  //       setFormMode(null);
+  //     } else {
+  //       console.error("Error updating data:", await response.json());
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating data:", error);
+  //   }
+  // };
+
+  // const handleDeleteClick = async (itemId?: number) => {
+  //   try {
+  //     if (!itemId) return; // If itemId is undefined (for single-object data), do nothing
+  //     const response = await fetch(`${selectedRoute}?id=${itemId}`, {
+  //       method: "DELETE",
+  //     });
+  //     if (response.ok) {
+  //       setApiData((prevData: any) =>
+  //         prevData.filter((item: any) => item.id !== itemId)
+  //       );
+  //     } else {
+  //       console.error("Error deleting data:", await response.json());
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting data:", error);
+  //   }
+  // };
   const handleSaveClick = async () => {
     try {
-      const method = editMode || formMode === "add" ? "POST" : "PUT"; 
-      const body = editMode || formMode === "add" ? editedData : // New or edited data
+      const method = formMode === "add" ? "POST" : "PUT";
+      const body = formMode === "add" ? formData : // For adding, use formData
         Array.isArray(apiData)
           ? apiData.map((item: any) =>
               item.id === editedData.id ? editedData : item
             )
-          : editedData; // Replace text data
+          : editedData; // For editing arrays or single objects
 
       const response = await fetch(selectedRoute, {
         method,
@@ -189,13 +237,13 @@ const ContentArea = ({ selectedRoute }: { selectedRoute: string }) => {
       });
       if (response.ok) {
         const updatedData = await response.json();
-        if (editMode || formMode === "add") {
+        if (formMode === "add") {
           setApiData(Array.isArray(apiData) ? [...apiData, updatedData] : updatedData);
         } else {
           setApiData(updatedData);
         }
-        setEditMode(false);
         setFormMode(null);
+        setEditMode(false);
       } else {
         console.error("Error updating data:", await response.json());
       }
@@ -207,6 +255,7 @@ const ContentArea = ({ selectedRoute }: { selectedRoute: string }) => {
   const handleDeleteClick = async (itemId?: number) => {
     try {
       if (!itemId) return; // If itemId is undefined (for single-object data), do nothing
+
       const response = await fetch(`${selectedRoute}?id=${itemId}`, {
         method: "DELETE",
       });
@@ -222,150 +271,6 @@ const ContentArea = ({ selectedRoute }: { selectedRoute: string }) => {
     }
   };
 
-//   return (
-//     <main className="flex-1 p-8">
-//       <h1 className="text-3xl font-bold mb-4">
-        
-//         {selectedRoute.split("/").pop()?.toUpperCase()}
-//       </h1>
-//      {/* Add New Button */}
-//      {currentRouteConfig?.type === "array" && !editMode && (
-//         <Button onClick={handleAddClick} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-//           Add New
-//         </Button>
-//       )}
-//       {isLoading ? (
-//         <div className="flex justify-center items-center h-64">
-//           <BeatLoader color="#4f46e5" />
-//         </div>
-//       ) : error ? (
-//         <p className="text-error">{error}</p>
-//       ) : (
-//         <AnimatePresence>
-//         {(editMode || formMode === "add") && Array.isArray(apiData) ? ( // Table for array data (edit/add mode)
-//           <table className="table-auto">
-//             <thead>
-//               <tr>
-//                   {apiRoutes
-//                     .find((route) => route.path === selectedRoute)
-//                     ?.fields.map((field) => (
-//                       <th key={field} className="px-4 py-2">
-//                         {field.toUpperCase()}
-//                       </th>
-//                     ))}
-//                   <th className="px-4 py-2">ACTIONS</th>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {apiData.map((item: any, index: number) => (
-//                   <tr key={index}>
-//                     {apiRoutes
-//                       .find((route) => route.path === selectedRoute)
-//                       ?.fields.map((field) => (
-//                         <td key={field} className="border px-4 py-2">
-//                           {editMode && index === apiData.indexOf(editedData) ? ( // Compare objects directly
-//                             <Input
-//                               type="text"
-//                               name={field}
-//                               value={editedData[field] || ""}
-//                               onChange={(e) => handleInputChange(e, index, field)} // Pass index and field
-//                               className="input input-bordered w-full"
-//                             />
-//                           ) : (
-//                             item[field]
-//                           )}
-//                         </td>
-//                       ))}
-//                     <td className="border px-4 py-2">
-//                       {editMode && index === apiData.indexOf(editedData) ? (
-//                         <>
-//                           <Button onClick={handleSaveClick}>Save</Button>
-//                           <Button onClick={handleCancelClick} variant="secondary">
-//                             Cancel
-//                           </Button>
-//                         </>
-//                       ) : (
-//                         <>
-//                           <Button
-//                             onClick={() => handleEditClick(item)}
-//                             variant="outline"
-//                           >
-//                             Edit
-//                           </Button>
-//                           <Button
-//                             onClick={() => handleDeleteClick(item.id)}
-//                             variant="destructive"
-//                           >
-//                             Delete
-//                           </Button>
-//                         </>
-//                       )}
-//                     </td>
-//                   </tr>
-                  
-//                 ))}
-//               </tbody>
-//             </table>
-//           ) : (
-//             // Text area for text data
-//             <div>
-//               {editMode ? (
-//                 <Textarea
-//                   value={editedData?.bio || ""}
-//                   onChange={handleInputChange}
-//                   name="bio"
-//                   className="textarea textarea-bordered w-full bg-base-200 focus:outline-none focus:ring-2 focus:ring-primary"
-//                 />
-//               ) : (
-//                 <div className="flex flex-col space-y-4">
-//                   {/* Render the fields as individual components */}
-//                   {Object.entries(apiData).map(([key, value]) => {
-//                     // Handle arrays like skills separately
-//                     if (Array.isArray(value)) {
-//                       return (
-//                         <div key={key}>
-//                           <h3 className="text-lg font-semibold">{key}:</h3>
-//                           <ul>
-//                             {value.map((skill: any, index: number) => (
-//                               <li key={index}>{skill}</li> // Assuming skills are strings
-//                             ))}
-//                           </ul>
-//                         </div>
-//                       );
-//                     }
-
-//                     return (
-//                       <div key={key}>
-//                         <h3 className="text-lg font-semibold">{key}:</h3>
-//                         <p>{value}</p>
-//                       </div>
-//                     );
-//                   })}
-//                 </div>
-//               )}
-//               <div>
-//                 {editMode ? (
-//                   <>
-//                     <Button className="mr-2" onClick={handleSaveClick}>
-//                       Save
-//                     </Button>
-//                     <Button onClick={handleCancelClick} variant="secondary">
-//                       Cancel
-//                     </Button>
-//                   </>
-//                 ) : (
-//                   <Button onClick={handleEditClick}>Edit</Button>
-//                 )}
-//               </div>
-//             </div>
-//           )}
-//         </AnimatePresence>
-//       )}
-//     </main>
-//   );
-// };
-
-// export default ContentArea;
 
 return (
   <main className="flex-1 p-8">
@@ -392,7 +297,7 @@ return (
           <table className="table-auto">
             {/* ... (table headers - same as before) ... */}
             <tbody>
-              {/* Render Existing Items (with edit/delete buttons) */}
+              Render Existing Items (with edit/delete buttons)
               {apiData.map((item: any, index: number) => (
                 <tr key={index}>
                   {/* ... (render cells for each field) ... */}
@@ -423,10 +328,41 @@ return (
                   </td>
                 </tr>
               ))}
+{/* Render Existing Items (with edit/delete buttons) */}
+{/* {apiData.map((item: any, index: number) => (
+                  <tr key={index}> */}
+                    {/* ... (render cells for each field) ... */}
+                    {/* <td className="border px-4 py-2">
+                      {editMode && index === apiData.indexOf(editedData) ? (
+                        <>
+                          <Button onClick={handleSaveClick}>Save</Button>
+                          <Button onClick={handleCancelClick} variant="secondary">
+                            Cancel
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            onClick={() => handleEditClick(item)} // Pass the item to handleEditClick
+                            variant="outline"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            onClick={() => handleDeleteClick(item.id)}
+                            variant="destructive"
+                          >
+                            Delete
+                          </Button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))} */}
 
               {/* Render Form for Adding New Item (if formMode === 'add') */}
             
-              {(editMode || formMode === "add") && ( // Conditionally render the new item form row
+              {/* {(editMode || formMode === "add") && ( // Conditionally render the new item form row
                 <tr>
                   {currentRouteConfig?.fields.map((field) => (
                     <td key={field} className="border px-4 py-2">
@@ -448,7 +384,33 @@ return (
                 </tr>
               )}
             </tbody>
-          </table>
+          </table> */}
+
+          {/* Render Form for Adding New Item (if formMode === 'add') */}
+          {formMode === "add" && (
+            <tr>
+              {currentRouteConfig?.fields.map((field) => (
+                <td key={field} className="border px-4 py-2">
+                  <Input
+                    type={field === "id" ? "number" : "text"}
+                    name={field}
+                    value={formData?.[field] || ""} // Handle undefined value
+                    onChange={handleInputChange}
+                    className="w-full"
+                  />
+                </td>
+              ))}
+              <td className="border px-4 py-2">
+                <Button onClick={handleSaveClick}>Save</Button>
+                <Button onClick={handleCancelClick} variant="secondary">
+                  Cancel
+                </Button>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
         ) : (
           // Text Area for Single Object Data ("About")
           <div>
