@@ -1,34 +1,35 @@
-import React, {useState, useEffect} from 'react'
+// app/admin/components/ContentArea.tsx
+"use client";
+import React, { useState, useEffect } from "react";
 
 const ContentArea = () => {
+  const [apiData, setApiData] = useState(null);
 
-   const [apiData, setApiData] = useState(null);
+  const fetchApiData = async (apiRoute: string) => { // Explicitly type apiRoute as string
+    try {
+      const response = await fetch(apiRoute);
+      const data = await response.json();
+      setApiData(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-   const fetchApiData = async (apiRoute) => {
-     try {
-       const response = await fetch(apiRoute);
-       const data = await response.json();
-       setApiData(data);
-     } catch (error) {
-       console.error('Error fetching data:', error);
-     }
-   };
+  useEffect(() => {
+    fetchApiData("/api/projects"); // Fetch initial data
+  }, []);
 
-   useEffect(() => {
-       fetchApiData('/api/projects'); // Fetch initial data
-   }, []);
+  const handleApiRouteClick = (apiRoute: string) => { // Explicitly type apiRoute as string
+    fetchApiData(apiRoute);
+  };
 
-   const handleApiRouteClick = (apiRoute) => {
-     fetchApiData(apiRoute);
-   };
+  return (
+    <main className="flex-1 p-8">
+      <h1 className="text-3xl font-bold mb-4">Content Area</h1>
+      {/* Render apiData here */}
+      <pre>{JSON.stringify(apiData, null, 2)}</pre>
+    </main>
+  );
+};
 
-   return (
-       <main className="flex-1 p-8">
-         <h1 className="text-3xl font-bold mb-4">Content Area</h1>
-         {/* Render apiData here */}
-         <pre>{JSON.stringify(apiData, null, 2)}</pre>
-       </main>
-   )
-}
-
-export default ContentArea
+export default ContentArea;
