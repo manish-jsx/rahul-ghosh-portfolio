@@ -3,8 +3,10 @@
 import Link from 'next/link';
 
 const apiRoutes = [
+  { path: '/api/about', label: 'About' },
   { path: '/api/projects', label: 'Projects' },
   { path: '/api/blog', label: 'Blog Posts' },
+  {path:  '/api/contact', label: 'Contact'},
 ]; // Add more routes
 
 export default function Sidebar() {
