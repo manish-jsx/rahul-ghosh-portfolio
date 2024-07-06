@@ -272,6 +272,244 @@ const ContentArea = ({ selectedRoute }: { selectedRoute: string }) => {
   };
 
 
+// return (
+//   <main className="flex-1 p-8">
+//     <h1 className="text-3xl font-bold mb-4">
+//       {selectedRoute.split("/").pop()?.toUpperCase()}
+//     </h1>
+
+//     {/* Add New Button */}
+//     {currentRouteConfig?.type === "array" && !editMode && (
+//       <Button onClick={handleAddClick} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+//         Add New
+//       </Button>
+//     )}
+
+//     {isLoading ? (
+//       <div className="flex justify-center items-center h-64">
+//         <BeatLoader color="#4f46e5" />
+//       </div>
+//     ) : error ? (
+//       <p className="text-error">{error}</p>
+//     ) : (
+//       <AnimatePresence>
+//         {Array.isArray(apiData) ? (
+//           <table className="table-auto">
+//             {/* ... (table headers - same as before) ... */}
+//             <tbody>
+//               Render Existing Items (with edit/delete buttons)
+//               {apiData.map((item: any, index: number) => (
+//                 <tr key={index}>
+//                   {/* ... (render cells for each field) ... */}
+//                   <td className="border px-4 py-2">
+//                     {editMode && index === apiData.indexOf(editedData) ? (
+//                       <>
+//                         <Button onClick={handleSaveClick}>Save</Button>
+//                         <Button onClick={handleCancelClick} variant="secondary">
+//                           Cancel
+//                         </Button>
+//                       </>
+//                     ) : (
+//                       <>
+//                         <Button
+//                           onClick={() => handleEditClick(item)}
+//                           variant="outline"
+//                         >
+//                           Edit
+//                         </Button>
+//                         <Button
+//                           onClick={() => handleDeleteClick(item.id)}
+//                           variant="destructive"
+//                         >
+//                           Delete
+//                         </Button>
+//                       </>
+//                     )}
+//                   </td>
+//                 </tr>
+//               ))}
+// {/* Render Existing Items (with edit/delete buttons) */}
+// {/* {apiData.map((item: any, index: number) => (
+//                   <tr key={index}> */}
+//                     {/* ... (render cells for each field) ... */}
+//                     {/* <td className="border px-4 py-2">
+//                       {editMode && index === apiData.indexOf(editedData) ? (
+//                         <>
+//                           <Button onClick={handleSaveClick}>Save</Button>
+//                           <Button onClick={handleCancelClick} variant="secondary">
+//                             Cancel
+//                           </Button>
+//                         </>
+//                       ) : (
+//                         <>
+//                           <Button
+//                             onClick={() => handleEditClick(item)} // Pass the item to handleEditClick
+//                             variant="outline"
+//                           >
+//                             Edit
+//                           </Button>
+//                           <Button
+//                             onClick={() => handleDeleteClick(item.id)}
+//                             variant="destructive"
+//                           >
+//                             Delete
+//                           </Button>
+//                         </>
+//                       )}
+//                     </td>
+//                   </tr>
+//                 ))} */}
+
+//               {/* Render Form for Adding New Item (if formMode === 'add') */}
+            
+//               {/* {(editMode || formMode === "add") && ( // Conditionally render the new item form row
+//                 <tr>
+//                   {currentRouteConfig?.fields.map((field) => (
+//                     <td key={field} className="border px-4 py-2">
+//                       <Input
+//                         type={field === "id" ? "number" : "text"}
+//                         name={field}
+//                         value={formData?.[field] || ""} // Use optional chaining
+//                         onChange={handleInputChange}
+//                         className="w-full"
+//                       />
+//                     </td>
+//                   ))}
+//                   <td className="border px-4 py-2">
+//                     <Button onClick={handleSaveClick}>Save</Button>
+//                     <Button onClick={handleCancelClick} variant="secondary">
+//                       Cancel
+//                     </Button>
+//                   </td>
+//                 </tr>
+//               )}
+//             </tbody>
+//           </table> */}
+
+//           {/* Render Form for Adding New Item (if formMode === 'add') */}
+//           {formMode === "add" && (
+//             <tr>
+//               {currentRouteConfig?.fields.map((field) => (
+//                 <td key={field} className="border px-4 py-2">
+//                   <Input
+//                     type={field === "id" ? "number" : "text"}
+//                     name={field}
+//                     value={formData?.[field] || ""} // Handle undefined value
+//                     onChange={handleInputChange}
+//                     className="w-full"
+//                   />
+//                 </td>
+//               ))}
+//               <td className="border px-4 py-2">
+//                 <Button onClick={handleSaveClick}>Save</Button>
+//                 <Button onClick={handleCancelClick} variant="secondary">
+//                   Cancel
+//                 </Button>
+//               </td>
+//             </tr>
+//           )}
+//         </tbody>
+//       </table>
+
+//         ) : (
+//           <div>
+//               {editMode ? (
+//                 <div className="flex flex-col space-y-4">
+//                   {/* Render the fields as individual components */}
+//                   {Object.entries(apiData).map(([key, value]) => {
+//                     // Handle arrays like skills separately
+//                     if (Array.isArray(value)) {
+//                       return (
+//                         <div key={key}>
+//                           <h3 className="text-lg font-semibold">{key}:</h3>
+//                           <ul>
+//                             {value.map((skill: any, index: number) => (
+//                               <li key={index}>
+//                                 <Input
+//                                   type="text"
+//                                   name={key}
+//                                   value={editedData[key][index] || ""}
+//                                   onChange={(e) =>
+//                                     handleInputChange(e, index, key)
+//                                   }
+//                                   className="w-full"
+//                                 />
+//                               </li>
+//                             ))}
+//                           </ul>
+//                         </div>
+//                       );
+//                     }
+
+//                     return (
+//                       <div key={key}>
+//                         <label htmlFor={key} className="text-lg font-semibold">
+//                           {key}:
+//                         </label>
+//                         <Input
+//                           type="text"
+//                           name={key}
+//                           value={editedData[key] || ""}
+//                           onChange={(e) => handleInputChange(e)}
+//                           className="input input-bordered w-full bg-base-200 focus:outline-none focus:ring-2 focus:ring-primary"
+//                         />
+//                       </div>
+//                     );
+//                   })}
+//                 </div>
+//               ) : (
+//                 <div className="flex flex-col space-y-4">
+//                   {/* Render the fields as individual components */}
+//                   {Object.entries(apiData).map(([key, value]) => {
+//                     // Handle arrays like skills separately
+//                     if (Array.isArray(value)) {
+//                       return (
+//                         <div key={key}>
+//                           <h3 className="text-lg font-semibold">{key}:</h3>
+//                           <ul>
+//                             {value.map((skill: any, index: number) => (
+//                               <li key={index}>{skill}</li>
+//                             ))}
+//                           </ul>
+//                         </div>
+//                       );
+//                     }
+
+//                     return (
+//                       <div key={key}>
+//                         <h3 className="text-lg font-semibold">{key}:</h3>
+//                         <p>{value}</p>
+//                       </div>
+//                     );
+//                   })}
+//                 </div>
+//               )}
+//               <div>
+//                 {editMode ? (
+//                   <>
+//                     <Button className="mr-2" onClick={handleSaveClick}>
+//                       Save
+//                     </Button>
+//                     <Button onClick={handleCancelClick} variant="secondary">
+//                       Cancel
+//                     </Button>
+//                   </>
+//                 ) : (
+//                   <Button onClick={handleEditClick}>Edit</Button>
+//                 )}
+//               </div>
+//             </div>
+//           )}
+//         </AnimatePresence>
+//       )}
+//     </main>
+//   );
+// };
+
+// export default ContentArea;
+
+
+
 return (
   <main className="flex-1 p-8">
     <h1 className="text-3xl font-bold mb-4">
@@ -295,12 +533,39 @@ return (
       <AnimatePresence>
         {Array.isArray(apiData) ? (
           <table className="table-auto">
-            {/* ... (table headers - same as before) ... */}
+            <thead>
+              <tr>
+                {apiRoutes
+                  .find((route) => route.path === selectedRoute)
+                  ?.fields.map((field) => (
+                    <th key={field} className="px-4 py-2">
+                      {field.toUpperCase()}
+                    </th>
+                  ))}
+                <th className="px-4 py-2">ACTIONS</th>
+              </tr>
+            </thead>
             <tbody>
-              Render Existing Items (with edit/delete buttons)
+              {/* Render Existing Items (with edit/delete buttons) */}
               {apiData.map((item: any, index: number) => (
                 <tr key={index}>
-                  {/* ... (render cells for each field) ... */}
+                  {apiRoutes
+                    .find((route) => route.path === selectedRoute)
+                    ?.fields.map((field) => (
+                      <td key={field} className="border px-4 py-2">
+                        {editMode && index === apiData.indexOf(editedData) ? ( // Compare objects directly
+                          <Input
+                            type={field === "id" ? "number" : "text"}
+                            name={field}
+                            value={editedData[field] || ""}
+                            onChange={(e) => handleInputChange(e, index, field)} // Pass index and field
+                            className="input input-bordered w-full"
+                          />
+                        ) : (
+                          item[field]
+                        )}
+                      </td>
+                    ))}
                   <td className="border px-4 py-2">
                     {editMode && index === apiData.indexOf(editedData) ? (
                       <>
@@ -312,7 +577,7 @@ return (
                     ) : (
                       <>
                         <Button
-                          onClick={() => handleEditClick(item)}
+                          onClick={() => handleEditClick(item)} // Pass the item to handleEditClick
                           variant="outline"
                         >
                           Edit
@@ -327,49 +592,18 @@ return (
                     )}
                   </td>
                 </tr>
+                
               ))}
-{/* Render Existing Items (with edit/delete buttons) */}
-{/* {apiData.map((item: any, index: number) => (
-                  <tr key={index}> */}
-                    {/* ... (render cells for each field) ... */}
-                    {/* <td className="border px-4 py-2">
-                      {editMode && index === apiData.indexOf(editedData) ? (
-                        <>
-                          <Button onClick={handleSaveClick}>Save</Button>
-                          <Button onClick={handleCancelClick} variant="secondary">
-                            Cancel
-                          </Button>
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            onClick={() => handleEditClick(item)} // Pass the item to handleEditClick
-                            variant="outline"
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            onClick={() => handleDeleteClick(item.id)}
-                            variant="destructive"
-                          >
-                            Delete
-                          </Button>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))} */}
 
               {/* Render Form for Adding New Item (if formMode === 'add') */}
-            
-              {/* {(editMode || formMode === "add") && ( // Conditionally render the new item form row
+              {formMode === "add" && (
                 <tr>
                   {currentRouteConfig?.fields.map((field) => (
                     <td key={field} className="border px-4 py-2">
                       <Input
                         type={field === "id" ? "number" : "text"}
                         name={field}
-                        value={formData?.[field] || ""} // Use optional chaining
+                        value={formData?.[field] || ""} // Handle undefined value
                         onChange={handleInputChange}
                         className="w-full"
                       />
@@ -384,43 +618,54 @@ return (
                 </tr>
               )}
             </tbody>
-          </table> */}
-
-          {/* Render Form for Adding New Item (if formMode === 'add') */}
-          {formMode === "add" && (
-            <tr>
-              {currentRouteConfig?.fields.map((field) => (
-                <td key={field} className="border px-4 py-2">
-                  <Input
-                    type={field === "id" ? "number" : "text"}
-                    name={field}
-                    value={formData?.[field] || ""} // Handle undefined value
-                    onChange={handleInputChange}
-                    className="w-full"
-                  />
-                </td>
-              ))}
-              <td className="border px-4 py-2">
-                <Button onClick={handleSaveClick}>Save</Button>
-                <Button onClick={handleCancelClick} variant="secondary">
-                  Cancel
-                </Button>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-
+          </table>
         ) : (
           // Text Area for Single Object Data ("About")
           <div>
             {editMode ? (
-              <Textarea
-                value={editedData.bio || ""}
-                onChange={handleInputChange}
-                name="bio"
-                className="textarea textarea-bordered w-full h-96 bg-base-200 focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              <div className="flex flex-col space-y-4">
+                {/* Render the fields as individual components */}
+                {Object.entries(apiData).map(([key, value]) => {
+                  // Handle arrays like skills separately
+                  if (Array.isArray(value)) {
+                    return (
+                      <div key={key}>
+                        <h3 className="text-lg font-semibold">{key}:</h3>
+                        <ul>
+                          {value.map((skill: any, index: number) => (
+                            <li key={index}>
+                              <Input
+                                type="text"
+                                name={key}
+                                value={editedData[key][index] || ""}
+                                onChange={(e) =>
+                                  handleInputChange(e, index, key)
+                                }
+                                className="w-full"
+                              />
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div key={key}>
+                      <label htmlFor={key} className="text-lg font-semibold">
+                        {key}:
+                      </label>
+                      <Input
+                        type="text"
+                        name={key}
+                        value={editedData[key] || ""}
+                        onChange={(e) => handleInputChange(e)}
+                        className="input input-bordered w-full bg-base-200 focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
               <div className="flex flex-col space-y-4">
                 {/* Render the fields as individual components */}
@@ -432,7 +677,7 @@ return (
                         <h3 className="text-lg font-semibold">{key}:</h3>
                         <ul>
                           {value.map((skill: any, index: number) => (
-                            <li key={index}>{skill}</li> 
+                            <li key={index}>{skill}</li>
                           ))}
                         </ul>
                       </div>
@@ -459,7 +704,7 @@ return (
                   </Button>
                 </>
               ) : (
-                <Button onClick={handleEditClick}>Edit</Button>
+                <Button onClick={() => handleEditClick(apiData)}>Edit</Button> // Pass the apiData to handleEditClick 
               )}
             </div>
           </div>
