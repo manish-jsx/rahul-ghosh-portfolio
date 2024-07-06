@@ -6,6 +6,47 @@ import path from 'path';
 
 const dataFilePath = path.join(process.cwd(), 'app', 'data', 'contact-submissions.json');
 
+
+// Helper Functions (Keep them outside of the main POST handler for better organization)
+
+function extractFormData(formData: FormData) {
+  return {
+    firstName: formData.get('firstName') as string,
+    lastName: formData.get('lastName') as string,
+    email: formData.get('email') as string,
+    phone: formData.get('phone') as string | null,
+    service: formData.get('service') as string,
+    budget: formData.get('budget') as string | null,
+    message: formData.get('message') as string,
+  };
+}
+
+function isValidFormData(firstName: string, lastName: string, email: string, service: string, message: string): boolean {
+  return !!firstName && !!lastName && !!email && !!service && !!message; // Basic validation
+}
+
+function createEmailText(
+  firstName: string,
+  lastName: string,
+  email: string,
+  phone: string | null,
+  service: string,
+  budget: string | null,
+  message: string
+): string {
+  return `
+    Name: ${firstName} ${lastName}
+    Email: ${email}
+    Phone: ${phone || 'Not provided'}
+    Service: ${service}
+    Budget: ${budget || 'Not provided'}
+    Message:
+    ${message}
+  `;
+}
+
+
+
 export async function POST(request: NextRequest) {
   try {
     // Parse the request body as JSON instead of formData
@@ -69,3 +110,9 @@ async function appendFormDataToJson(firstName: string, lastName: string, email: 
       console.error("Error appending form data to JSON:", error);
     }
   }
+
+
+
+
+
+
